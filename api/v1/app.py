@@ -15,6 +15,8 @@ def teardown(excepetion):
 
 @app.errorhandler(404)
 def Not_found(error):
+    """Manafe error 404"""
+
     error = {
         "error": "Not found"
     }
