@@ -71,7 +71,7 @@ class FileStorage:
 
     def get(self, cls, id):
         """Returns the object based on the class and its ID, or None if not found"""
-        objs = self.__session.query(cls).all()
+        objs = self.all(cls).values()
         for obj in objs:
             if obj.id == id:
                 return obj
