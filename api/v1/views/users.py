@@ -49,7 +49,8 @@ def post_user():
         return jsonify(error_message3), 400
     else:
         users = User()
-        users.name = data['name']
+        users.email = data['email']
+        users.password = data['password']
         users.save()
         return jsonify(users.to_dict()), 201
 
@@ -64,6 +65,7 @@ def put_user(user_id):
         error_message = 'Not a JSON'
         return jsonify(error_message), 400
     else:
-        st_users.name = data['email']
+        st_users.email = data['email']
+        st_users.password = data['password']
         st_users.save()
         return jsonify(st_users.to_dict()), 200
