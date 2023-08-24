@@ -30,8 +30,8 @@ def delete_states(state_id):
     """"""
     state_storage = storage.get(State, state_id)
     if state_storage is None:
-        return {'Not found'}, 404
-    state_storage.delete()
+        return abort(404)
+    storage.delete(state_storage)
     storage.save()
     return jsonify({}), 200
 
@@ -59,11 +59,10 @@ def put_state(state_id):
     state_storage = storage.get(State, state_id)
     if state_storage is None:
         return abort(404)
-    elif not data:
+    if not data:
         error_message = 'Not a JSON'
         return jsonify(error_message), 400
     else:
-        state = State()
-        state.name = data['name']
-        state.save()
-        return jsonify(state.to_dict()), 200
+        state_storage.name = data['name']
+        state_storage.save()
+        return jsonify(state_storage.to_dict()), 200
