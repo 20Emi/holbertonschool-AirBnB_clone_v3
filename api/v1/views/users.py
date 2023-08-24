@@ -65,6 +65,7 @@ def put_user(user_id):
         error_message = 'Not a JSON'
         return jsonify(error_message), 400
     else:
-        st_users.email = data['email']
+        if 'email' in data:
+            st_users.email = data['email']
         st_users.save()
         return jsonify(st_users.to_dict()), 200
