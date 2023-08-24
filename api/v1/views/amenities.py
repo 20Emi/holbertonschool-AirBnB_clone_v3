@@ -7,7 +7,7 @@ from api.v1.views import app_views
 from models.amenity import Amenity
 
 
-@app_views.route('/amenities', methods=['GET'])
+@app_views.route('/amenities/', methods=['GET'])
 def get_amenities():
     st_amenities = storage.all(Amenity)
     amenity_list = []
@@ -45,9 +45,9 @@ def post_amenity():
         error_message2 = 'Missing name'
         return jsonify(error_message2), 400
     else:
-        amenity = storage()
+        amenity = Amenity()
         amenity.name = data['name']
-        storage.save()
+        amenity.save()
         return jsonify(amenity.to_dict()), 201
 
 
@@ -56,11 +56,11 @@ def put_amenity(amenity_id):
     data = request.get_json()
     st_amenities = storage.get(Amenity, amenity_id)
     if st_amenities is None:
-        abort(404)
+        return abort(404)
     elif not data:
         error_message = 'Not a JSON'
         return jsonify(error_message), 400
     else:
         st_amenities.name = data['name']
-        storage.save()
+        st_amenities.save()
         return jsonify(st_amenities.to_dict()), 200
