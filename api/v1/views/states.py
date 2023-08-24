@@ -53,3 +53,17 @@ def post_state():
         return jsonify(state.to_dict()), 201
 
 @app_views.route('/states/<state_id>', methods=['PUT'])
+def put_state(state_id):
+    """"""
+    data = request.get_json()
+    state_storage = storage.get(State, state_id)
+    if state_storage is None:
+        return abort(404)
+    elif not data:
+        error_message = 'Not a JSON'
+        return jsonify(error_message), 400
+    else:
+        state = State()
+        state.name = data['name']
+        state.save()
+        return jsonify(state.to_dict()), 200
