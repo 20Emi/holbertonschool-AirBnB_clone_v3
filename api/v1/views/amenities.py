@@ -12,7 +12,7 @@ def get_amenities():
     st_amenities = storage.all(Amenity)
     amenity_list = []
     for obj in st_amenities:
-        amenity_list.append(obj.to_dict())
+        amenity_list.append(st_amenities[obj].to_dict())
     return jsonify(st_amenities)
 
 
@@ -21,14 +21,15 @@ def get_amenities_id(amenity_id):
     st_amenities = storage.get(Amenity, amenity_id)
     if st_amenities is not None:
         return jsonify(st_amenities.to_dict())
-    return abort(404)
+    else:
+        abort(404)
 
 
 @app_views.route('/amenities/<amenity_id>', methods=['DELETE'])
 def detele_amenity(amenity_id):
     st_amenities = storage.get(Amenity, amenity_id)
     if st_amenities is None:
-        abort(404)
+        return abort(404)
     storage.delete(st_amenities)
     storage.save()
     return jsonify({}), 200
@@ -40,13 +41,14 @@ def post_amenity():
     if not data:
         error_message = 'Not a JSON'
         return jsonify(error_message), 400
-    if 'name' not in data:
+    elif 'name' not in data:
         error_message2 = 'Missing name'
         return jsonify(error_message2), 400
-    amenity = storage()
-    amenity.name = data['name']
-    storage.save()
-    return jsonify(amenity.to_dict()), 201
+    else:
+        amenity = storage()
+        amenity.name = data['name']
+        storage.save()
+        return jsonify(amenity.to_dict()), 201
 
 
 @app_views.route('/amenities/<amenity_id>', methods=['PUT'])
@@ -55,9 +57,10 @@ def put_amenity(amenity_id):
     st_amenities = storage.get(Amenity, amenity_id)
     if st_amenities is None:
         abort(404)
-    if not data:
+    elif not data:
         error_message = 'Not a JSON'
         return jsonify(error_message), 400
-    st_amenities.name = data['name']
-    storage.save()
-    return jsonify(st_amenities.to_dict()), 200
+    else:
+        st_amenities.name = data['name']
+        storage.save()
+        return jsonify(st_amenities.to_dict()), 200
