@@ -13,7 +13,7 @@ def get_amenities():
     amenity_list = []
     for obj in st_amenities:
         amenity_list.append(st_amenities[obj].to_dict())
-    return jsonify(st_amenities)
+    return jsonify(amenity_list)
 
 
 @app_views.route('/amenities/<amenity_id>', methods=['GET'])
