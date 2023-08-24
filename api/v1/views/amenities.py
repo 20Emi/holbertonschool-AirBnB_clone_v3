@@ -35,7 +35,7 @@ def detele_amenity(amenity_id):
     return jsonify({}), 200
 
 
-@app_views.route('/amenities/<amenity_id>', methods=['POST'])
+@app_views.route('/amenities/', methods=['POST'])
 def post_amenity():
     data = request.get_json()
     if not data:
