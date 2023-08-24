@@ -12,8 +12,8 @@ def get_state():
     """"""
     state_storage = storage.all(State)
     state_list = []
-    for obj in state_storage.values():
-        state_list.append(obj.to_dict())
+    for obj in state_storage:
+        state_list.append(state_storage[obj].to_dict())
     return jsonify(state_list)
 
 @app_views.route('/states/<state_id>', methods=['GET'])
@@ -21,16 +21,17 @@ def get_setter_id(state_id):
     """"""
     state_storage = storage.get(State, state_id)
     if state_storage is not None:
-        return jsonify(state_storage.to_dict())
-    abort(404)
+        return jsonify(state_storage)
+    else:
+        abort(404)
 
 @app_views.route('/states/<state_id>', methods=['DELETE'])
 def delete_states(state_id):
     """"""
     state_storage = storage.get(State, state_id)
     if state_storage is None:
-        return abort(404)
-    del storage.all(State)[state_storage] 
+        return {'Not found'}, 404
+    state_storage.delete()
     storage.save()
     return jsonify({}), 200
 
