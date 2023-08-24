@@ -22,8 +22,7 @@ def get_setter_id(state_id):
     state_storage = storage.get(State, state_id)
     if state_storage is not None:
         return jsonify(state_storage.to_dict())
-    else:
-        abort(404)
+    abort(404)
 
 @app_views.route('/states/<state_id>', methods=['DELETE'])
 def delete_states(state_id):
