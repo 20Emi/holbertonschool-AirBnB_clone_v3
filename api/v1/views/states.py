@@ -16,6 +16,7 @@ def get_state():
         state_list.append(state_storage[obj].to_dict())
     return jsonify(state_list)
 
+
 @app_views.route('/states/<state_id>', methods=['GET'])
 def get_setter_id(state_id):
     """"""
@@ -24,6 +25,7 @@ def get_setter_id(state_id):
         return jsonify(state_storage.to_dict())
     else:
         abort(404)
+
 
 @app_views.route('/states/<state_id>', methods=['DELETE'])
 def delete_states(state_id):
@@ -34,6 +36,7 @@ def delete_states(state_id):
     storage.delete(state_storage)
     storage.save()
     return jsonify({}), 200
+
 
 @app_views.route('/states/', methods=['POST'])
 def post_state():
@@ -51,6 +54,7 @@ def post_state():
         state.name = data['name']
         state.save()
         return jsonify(state.to_dict()), 201
+
 
 @app_views.route('/states/<state_id>', methods=['PUT'])
 def put_state(state_id):
