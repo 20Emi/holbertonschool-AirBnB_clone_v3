@@ -21,7 +21,7 @@ def get_setter_id(state_id):
     """"""
     state_storage = storage.get(State, state_id)
     if state_storage is not None:
-        return jsonify(state_storage)
+        return jsonify(state_storage.to_dict())
     else:
         abort(404)
 
