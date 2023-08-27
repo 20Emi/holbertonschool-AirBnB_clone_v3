@@ -6,6 +6,7 @@ from models import storage
 from api.v1.views import app_views
 from models.place import Place
 from models.user import User
+from models.city import City
 
 
 @app_views.route('/cities/<city_id>/places', methods=['GET'])
