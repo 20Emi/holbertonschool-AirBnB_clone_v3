@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """"""
 
-from flask import Flask, jsonify, abort, request
+from flask import Flask, jsonify, abort, request, make_response
 from models import storage
 from api.v1.views import app_views
 from models.city import City
@@ -9,14 +9,11 @@ from models.city import City
 
 @app_views.route('states/<state_id>/cities', methods=['GET'])
 def all_cities_state(state_id):
-    state = storage.get(State, state_id)   
-    if not state:
-        abort(404)
-    results = []
-    for city in storage.all("City").values():
-        if city.state_id == state_id:
-            results.append(city.to_dict())
-    return jsonify(results)
+    state = storage.get(State, state_id)
+    if state is None:
+        return make_response(jsonify(), 404)
+    result = [city.to_dict() for city in state.cities]
+    return jsonify(result)
 
 
 @app_views.route('cities/<city_id>', methods=['GET'])
