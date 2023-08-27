@@ -44,14 +44,17 @@ def create_place(city_id):
         abort(404)
     json_get = request.get_json()
     if not json_get:
-        abort(400, "Not a JSON")
+        message_error = 'Not a JSON'
+        return jsonify(message_error), 400
     if "user_id" not in json_get:
-        abort(400, "Missing user_id")
+        error = 'Missing user_id'
+        return jsonify(error), 400
     user = json_get['user_id']
     if not storage.get(User, user):
         abort(404)
     if 'name' not in json_get:
-        abort(400, "Missing name")
+        error_message = 'Missing name'
+        return jsonify(error_message), 400
     new_place = Place(**json_get)
     setattr(new_place, 'city_id', city_id)
     storage.new(new_place)
