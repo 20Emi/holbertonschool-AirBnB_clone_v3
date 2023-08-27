@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """"""
 
-from flask import Flask, jsonify, abort, request
+from flask import jsonify, abort, request
 from models import storage
 from api.v1.views import app_views
 from models.user import User
@@ -9,7 +9,7 @@ from models.place import Place
 from models.review import Review
 
 
-@app_views.route('/places/<place_id>/reviews', methods=['GET'])
+@app_views.route('/places/<place_id>/reviews', methods=['GET'], strict_slashes=False)
 def get_reviews_place(place_id):
     """"""
 
@@ -22,7 +22,7 @@ def get_reviews_place(place_id):
     return jsonify(places_list)
 
 
-@app_views.route('/reviews/<review_id>', methods=['GET'])
+@app_views.route('/reviews/<review_id>', methods=['GET'], strict_slashes=False)
 def get_reviews(review_id):
     """"""
     st_reviews = storage.get(Review, review_id)
@@ -31,7 +31,7 @@ def get_reviews(review_id):
     abort(404)
 
 
-@app_views.route('/reviews/<review_id>', methods=['DELETE'])
+@app_views.route('/reviews/<review_id>', methods=['DELETE'], strict_slashes=False)
 def detele_user(review_id):
     st_review = storage.get(Review, review_id)
     if st_review is None:
@@ -41,7 +41,7 @@ def detele_user(review_id):
     return jsonify({}), 200
 
 
-@app_views.route('/places/<place_id>/reviews', methods=['POST'])
+@app_views.route('/places/<place_id>/reviews', methods=['POST'], strict_slashes=False)
 def post_reviews(place_id):
     data = request.get_json()
     places = storage.get(Place, place_id)
@@ -67,7 +67,7 @@ def post_reviews(place_id):
         return jsonify(data.to_dict()), 201
 
 
-@app_views.route('/reviews/<review_id>', methods=['PUT'])
+@app_views.route('/reviews/<review_id>', methods=['PUT'], strict_slashes=False)
 def put_user(review_id):
     data = request.get_json()
     reviews = storage.get(Review, review_id)
