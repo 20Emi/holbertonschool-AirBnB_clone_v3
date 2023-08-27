@@ -12,14 +12,13 @@ from models import storage
 @app_views.route('/places/<place_id>/reviews', methods=['GET'], strict_slashes=False)
 def get_reviews_place(place_id):
     """"""
-
-    places = storage.get(Place, place_id)
-    places_list = []
+    places = storage.get(Place, place_id).places
     if places is None:
         abort(404)
-    for obj in places.obj:
-        places_list.append(obj.to_dict())
-    return jsonify(places_list)
+    reviews_list = []
+    for review in places:
+        reviews_list.append(review.to_dict())
+    return jsonify(reviews_list)
 
 
 @app_views.route('/reviews/<review_id>', methods=['GET'], strict_slashes=False)
