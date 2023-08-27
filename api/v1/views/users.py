@@ -64,6 +64,8 @@ def put_user(user_id):
     elif not data:
         error_message = 'Not a JSON'
         return jsonify(error_message), 400
-    st_users.email = data['email']
+    for key, value in data.items():
+        if key not in ['id', 'created_at', 'update_at', 'email']:
+            setattr(st_users, key, value)
     st_users.save()
     return jsonify(st_users.to_dict()), 200

@@ -27,7 +27,7 @@ class TestDBStorageDocs(unittest.TestCase):
     """Tests to check the documentation and style of DBStorage class"""
     @classmethod
     def setUpClass(cls):
-        """Set up for the doc tests"""
+        """Set up for the dbst"""
         cls.dbs_f = inspect.getmembers(DBStorage, inspect.isfunction)
 
     def test_pep8_conformance_db_storage(self):
@@ -86,3 +86,43 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+
+@unittest.skipIf(models.storage_t != 'db', "not testing file storage")
+class TestDBStorage(unittest.TestCase):
+    """Test the DBStorage class"""
+    
+    @classmethod
+    def setUpClass(cls):
+        """Setup class-level resources"""
+        cls.db_storage = DBStorage()
+        cls.db_storage.reload()
+
+    @classmethod
+    def tearDownClass(cls):
+        """Tear down class-level resources"""
+        cls.db_storage.close()
+
+    def setUp(self):
+        """Setup method-level resources"""
+        self.new_state = State(name="California")
+        self.db_storage.new(self.new_state)
+        self.db_storage.save()
+
+    def tearDown(self):
+        """Tear down method-level resources"""
+        self.db_storage.delete(self.new_state)
+        self.db_storage.save()
+
+    def test_db_get_method(self):
+        """Test the get method of the DBStorage class"""
+        retrieved_state = self.db_storage.get(State, self.new_state.id)
+        self.assertEqual(retrieved_state, self.new_state)
+
+    def test_db_count_method(self):
+        """Test the count method of the DBStorage class"""
+        initial_count = self.db_storage.count(State)
+        new_state = State(name="Texas")
+        self.db_storage.new(new_state)
+        self.db_storage.save()
+        updated_count = self.db_storage.count(State)
+        self.assertEqual(updated_count, initial_count + 1)
