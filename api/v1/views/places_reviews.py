@@ -13,12 +13,12 @@ from models.review import Review
 def get_reviews_place(place_id):
     """"""
 
-    places = storage.all(Place, place_id)
+    places = storage.get(Place, place_id)
     places_list = []
     if places is None:
         abort(404)
     for obj in places.review:
-        places_list.append(Review.to_dict())
+        places_list.append(obj.to_dict())
     return jsonify(places_list)
 
 
