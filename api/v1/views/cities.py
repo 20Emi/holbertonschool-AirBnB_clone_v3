@@ -42,7 +42,8 @@ def delete_city(city_id):
     return jsonify(result), 200
 
 
-@app_views.route('states/<state_id>/cities', methods=['POST'], strict_slashes=False)
+@app_views.route('states/<state_id>/cities', methods=['POST'],
+                 strict_slashes=False)
 def create_city(state_id):
 
     state = storage.get(State, state_id)
@@ -58,7 +59,8 @@ def create_city(state_id):
 
     json_get['state_id'] = state.id
     data = City(**json_get)
-    data.save()
+    storage.new(data)
+    storage.save()
 
     return jsonify(data.to_dict()), 201
 
