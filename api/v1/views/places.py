@@ -40,21 +40,18 @@ def delete_place(place_id):
 @app_views.route('/cities/<city_id>/places', methods=['POST'])
 def create_place(city_id):
     city = storage.get(City, city_id)
-    if not city:
+    if city is None:
         abort(404)
     json_get = request.get_json()
     if not json_get:
-        message_error = 'Not a JSON'
-        return jsonify(message_error), 400
+        abort(400, "Not a JSON")
     if "user_id" not in json_get:
-        error = 'Missing user_id'
-        return jsonify(error), 400
-    user = json_get['user_id']
-    if not storage.get(User, user):
+        abort(400, "Missing user_id")
+    user_id = json_get['user_id']
+    if not storage.get(User, user_id):
         abort(404)
     if 'name' not in json_get:
-        error_message = 'Missing name'
-        return jsonify(error_message), 400
+        abort(400, "Missing text")
     new_place = Place(**json_get)
     setattr(new_place, 'city_id', city_id)
     storage.new(new_place)
@@ -65,16 +62,14 @@ def create_place(city_id):
 @app_views.route('/places/<place_id>', methods=['PUT'])
 def update_place(place_id):
     place = storage.get(Place, place_id)
-    if not place:
+    if place is None:
         abort(404)
-    try:
-        json_get = request.get_json()
-    except:
+    json_get = request.get_json()
+    if not json_get:
         abort(400, "Not a JSON")
-    if json_get and isinstance(json_get, dict):
-        ignore = ['id', 'user_id', 'city_id', 'created_at', 'updated_at']
-        for key, value in json_get.items():
-            if key not in ignore:
-                setattr(place, key, value)
-        storage.save()
+    for key, value in json_get.items():
+        if key != 'id' and key != 'user_id' and 'place_id':
+                if key != 'created_at' and key != 'updated_at':
+                    setattr(place, key, value)
+    storage.save()
     return jsonify(place.to_dict()), 200
