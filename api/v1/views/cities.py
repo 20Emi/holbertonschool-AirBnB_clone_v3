@@ -59,11 +59,11 @@ def create_city(state_id):
         abort(error_message2), 400
 
     json_get['state_id'] == state.id
-    data = City(**json_get)
-    storage.new(data)
+    json_get = City(**json_get)
+    storage.new(json_get)
     storage.save()
 
-    return jsonify(data.to_dict()), 201
+    return jsonify(json_get.to_dict()), 201
 
 
 @app_views.route('cities/<city_id>', methods=['PUT'])
