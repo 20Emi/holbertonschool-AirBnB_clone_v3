@@ -46,35 +46,41 @@ def delete_city(city_id):
 def create_city(state_id):
 
     state = storage.get(State, state_id)
-    if not state:
-        abort(400)
-    try:
-        json_get = request.get_json()
-    except ValueError:
-        abort(400, "Not a JSON")
+    if state is None:
+        abort(404)
+
+    json_get = request.get_json()
+    if not json_get:
+        error_message = 'Not a JSON'
+        return jsonify(error_message), 400
+
     if 'name' not in json_get:
-        abort(400, "Missing name")
-    new_city = City(name=json_get['name'], state_id=state.id)
-    storage.new(new_city)
+        error_message2 = 'Missing name'
+        abort(error_message2), 400
+
+    json_get['state_id'] == state.id
+    data = City(**json_get)
+    storage.new(data)
     storage.save()
 
-    return jsonify(new_city.to_dict()), 201
+    return jsonify(data.to_dict()), 201
 
 
 @app_views.route('cities/<city_id>', methods=['PUT'])
 def update_city(city_id):
 
     city = storage.get(City, city_id)
-    if not city:
+    if city is None:
         abort(404)
-    try:
-        json_get = request.get_json()
-    except:
-        abort(400, "Not a JSON")
-    if json_get and isinstance(json_get, dict):
-        ignore = ['id', 'state_id', 'created_at', 'updated_at']
-        for key, value in json_get.items():
-            if key not in ignore:
-                setattr(city, key, value)
-        storage.save()
+    json_get = request.get_json()
+
+    if not json_get:
+        error_message = 'Not a JSON'
+        return jsonify(error_message), 400
+
+    ignore = ['id', 'state_id', 'created_at', 'updated_at']
+    for key, value in json_get.items():
+        if key not in ignore:
+            setattr(city, key, value)
+    storage.save()
     return jsonify(city.to_dict()), 200
