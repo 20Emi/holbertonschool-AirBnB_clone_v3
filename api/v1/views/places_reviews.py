@@ -2,7 +2,7 @@
 """"""
 
 from api.v1.views import app_views
-from flask import jsonify, request, abort
+from flask import Flask, jsonify, request, abort
 from models.review import Review
 from models.place import Place
 from models.user import User
@@ -40,30 +40,28 @@ def delete_review(review_id):
     return jsonify({}), 200
 
 
-@app_views.route('/places/<place_id>/reviews', methods=['POST'], strict_slashes=False)
-def post_reviews(place_id):
-    data = request.get_json()
-    if data is None:
-        error_message = 'Not a JSON'
-        return jsonify(error_message), 400
-    places = storage.get(Place, place_id)
-    if places is None:
+@app_views.route('places/<place_id>/reviews', methods=['POST'],
+                 strict_slashes=False)
+def create_review(place_id):
+    """ create new review obj """
+    place = storage.get(Place, place_id)
+    if place is None:
         abort(404)
-    if 'user_id' not in data:
-        error_message2 = 'Missing user_id'
-        return jsonify(error_message2), 400
-    user_id = data['user_id']
-    users = storage.get(User, user_id)
-    if users is None:
+    obj_data = request.get_json()
+    if not obj_data:
+        abort(400, "Not a JSON")
+    if "user_id" not in obj_data:
+        abort(400, "Missing user_id")
+    user_id = obj_data['user_id']
+    if not storage.get(User, user_id):
         abort(404)
-    if 'text' not in data:
-        error_message3 = 'Missing text'
-        return jsonify(error_message3), 400
-
-    data['place_id'] = place_id
-    review = Review(**data)
-    review.save()
-    return jsonify(review.to_dict()), 201
+    if "text" not in obj_data:
+        abort(400, "Missing text")
+    obj = Review(**obj_data)
+    setattr(obj, 'place_id', place_id)
+    storage.new(obj)
+    storage.save()
+    return jsonify(obj.to_dict()), 201
 
 
 @app_views.route('/reviews/<review_id>', methods=['PUT'], strict_slashes=False)
