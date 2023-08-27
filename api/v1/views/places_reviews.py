@@ -12,11 +12,11 @@ from models import storage
 @app_views.route('/places/<place_id>/reviews', methods=['GET'], strict_slashes=False)
 def get_reviews_place(place_id):
     """"""
-    places = storage.get(Place, place_id).places
+    places = storage.get(Place, place_id)
     if places is None:
         abort(404)
     reviews_list = []
-    for review in places:
+    for review in places.reviews:
         reviews_list.append(review.to_dict())
     return jsonify(reviews_list)
 
@@ -25,9 +25,9 @@ def get_reviews_place(place_id):
 def get_reviews(review_id):
     """"""
     st_reviews = storage.get(Review, review_id)
-    if st_reviews is not None:
-        return jsonify(st_reviews.to_dict())
-    abort(404)
+    if st_reviews is None:
+        abort(404)
+    return jsonify(st_reviews.to_dict())
 
 
 @app_views.route('/reviews/<review_id>', methods=['DELETE'], strict_slashes=False)
