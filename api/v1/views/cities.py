@@ -47,7 +47,7 @@ def create_city(state_id):
 
     state = storage.get(State, state_id)
     if not state:
-        abort(404)
+        abort(400)
     try:
         json_get = request.get_json()
     except ValueError:
