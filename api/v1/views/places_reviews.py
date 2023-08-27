@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 """"""
 
-from flask import jsonify, abort, request
-from models import storage
 from api.v1.views import app_views
-from models.user import User
-from models.place import Place
+from flask import jsonify, request, abort
 from models.review import Review
+from models.place import Place
+from models.user import User
+from models import storage
 
 
 @app_views.route('/places/<place_id>/reviews', methods=['GET'], strict_slashes=False)
@@ -17,7 +17,7 @@ def get_reviews_place(place_id):
     places_list = []
     if places is None:
         abort(404)
-    for obj in places.review:
+    for obj in places.obj:
         places_list.append(obj.to_dict())
     return jsonify(places_list)
 
@@ -32,7 +32,7 @@ def get_reviews(review_id):
 
 
 @app_views.route('/reviews/<review_id>', methods=['DELETE'], strict_slashes=False)
-def detele_user(review_id):
+def del_user(review_id):
     st_review = storage.get(Review, review_id)
     if st_review is None:
         return abort(404)
@@ -68,7 +68,7 @@ def post_reviews(place_id):
 
 
 @app_views.route('/reviews/<review_id>', methods=['PUT'], strict_slashes=False)
-def put_user(review_id):
+def put_review(review_id):
     data = request.get_json()
     reviews = storage.get(Review, review_id)
     if review_id is None:
