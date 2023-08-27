@@ -55,12 +55,11 @@ def create_city(state_id):
         return jsonify(error_message), 400
     if 'name' not in json_get:
         error_message2 = 'Missing name'
-        abort(error_message2), 400
+        return jsonify(error_message2), 400
 
     json_get['state_id'] = state.id
     data = City(**json_get)
-    storage.new(data)
-    storage.save()
+    data.save()
 
     return jsonify(data.to_dict()), 201
 
